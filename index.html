@@ -1,92 +1,49 @@
 <!DOCTYPE html>
-<html>
+<html lang="vi">
 <head>
     <meta charset="utf-8">
-    <meta name="viewport"
-        content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-
-    <title>AR Video + Model</title>
-
-    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
-    <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
-</head>
-
-<body style="margin:0; overflow:hidden;">
-
-<a-scene
-    embedded
-    vr-mode-ui="enabled: false"
-    arjs="sourceType: webcam; debugUIEnabled: false;">
-
-    <a-assets>
-        <video
-            id="myVideo"
-            src="./assets/3dmodel.mp4"
-            preload="auto"
-            loop
-            muted
-            playsinline
-            webkit-playsinline
-            crossorigin="anonymous">
-        </video>
-
-    </a-assets>
-
-    <a-marker id="hiroMarker" preset="hiro">
-
-        <!-- Model 3D -->
-        <a-obj-model
-            src="#bird-obj"
-            mtl="#bird-mtl"
-            position="0 0 0"
-            scale="0.05 0.05 0.05"
-            rotation="-90 0 0">
-        </a-obj-model>
-
-        <!-- Màn hình video -->
-        <a-plane
-            position="0 0.5 0"
-            rotation="-90 0 0"
-            width="2"
-            height="1.125"
-            material="src:#myVideo">
-        </a-plane>
-
-    </a-marker>
-
-    <a-entity camera></a-entity>
-
-</a-scene>
-
-<script>
-
-window.addEventListener("load", () => {
-
-    const marker = document.querySelector("#hiroMarker");
-    const video = document.querySelector("#myVideo");
-
-    marker.addEventListener("markerFound", () => {
-        console.log("Marker detected");
-
-        video.currentTime = 0;
-
-        const playPromise = video.play();
-
-        if (playPromise !== undefined) {
-            playPromise.catch(err => {
-                console.log("Video autoplay blocked:", err);
-            });
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thám Hiểm Đại Dương - Sư Phạm Sinh Học</title>
+    <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
+    <style>
+        /* Giao diện nút bấm lồng vào màn hình để học sinh dễ tương tác */
+        #instruction-overlay {
+            position: fixed; top: 10px; left: 50%; transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.6); color: white; padding: 10px 20px;
+            border-radius: 20px; font-family: Arial, sans-serif; font-size: 14px;
+            z-index: 999; text-align: center; pointer-events: none;
         }
-    });
+    </style>
+</head>
+<body style="margin: 0px; overflow: hidden;">
 
-    marker.addEventListener("markerLost", () => {
-        console.log("Marker lost");
-        video.pause();
-    });
+    <div id="instruction-overlay">
+        Hãy xoay điện thoại các góc để tìm cụ Rùa biển nhé!
+    </div>
 
-});
+    <a-scene version="1.3.0">
+        
+        <a-assets>
+            <video id="video-rua-bien" 
+                   src="assets/Insta360%20x4%20Scuba%20Diving%20Footage%20of%20a%20Sea%20Turtle%20(watch%20in%204K).mp4" 
+                   preload="auto" autoplay loop="true" muted playsinline webkit-playsinline></video>
+        </a-assets>
 
-</script>
+        <a-videosphere src="#video-rua-bien" rotation="0 -90 0"></a-videosphere>
 
+        <a-entity camera look-controls></a-entity>
+        
+    </a-scene>
+
+    <script>
+        // Mẹo nhỏ xử lý tự động phát (Autoplay) trên một số trình duyệt ngặt nghèo:
+        // Khi học sinh chạm nhẹ vào màn hình lần đầu tiên, video sẽ chắc chắn được phát.
+        document.body.addEventListener('click', function () {
+            var video = document.getElementById('video-rua-bien');
+            if (video.paused) {
+                video.play();
+            }
+        });
+    </script>
 </body>
 </html>
